@@ -64,7 +64,7 @@ def minute_alert():
     print("Calculando alertas...")
 
     data = Data.objects.filter(
-        base_time__gte=datetime.now() - timedelta(hours=1))
+        base_time__gte=datetime.now() - timedelta(minutes=1))
     aggregation = data.annotate(check_value=Avg('avg_value')) \
         .select_related('station', 'measurement') \
         .select_related('station__user', 'station__location') \
@@ -87,8 +87,20 @@ def minute_alert():
         state = item['station__location__state__name']
         city = item['station__location__city__name']
         user = item['station__user__username']
-        if True:
-            alert = True
+        if variable == "temperatura":
+            if city =="bogota":
+                if item["check_value"]>25:
+                    alert = True
+            if city =="quito":
+                if item["check_value"]>21:
+                    alert = True
+        if variable == "humedad":
+            if city =="bogota":
+                if item["check_value"]>62:
+                    alert = True
+            if city =="quito":
+                if item["check_value"]>50:
+                    alert = True
 
         if alert:
             message = "ALERT {} {} {}".format(variable, min_value, max_value)
