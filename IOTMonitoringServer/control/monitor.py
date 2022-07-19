@@ -61,10 +61,6 @@ def analyze_data():
 
 
 def minute_alert():
-    # Consulta todos los datos de la última hora, los agrupa por estación y variable
-    # Compara el promedio con los valores límite que están en la base de datos para esa variable.
-    # Si el promedio se excede de los límites, se envia un mensaje de alerta.
-
     print("Calculando alertas...")
 
     data = Data.objects.filter(
@@ -84,16 +80,13 @@ def minute_alert():
     alerts = 0
     for item in aggregation:
         alert = False
-
         variable = item["measurement__name"]
         max_value = item["measurement__max_value"] or 0
         min_value = item["measurement__min_value"] or 0
-
         country = item['station__location__country__name']
         state = item['station__location__state__name']
         city = item['station__location__city__name']
         user = item['station__user__username']
-
         if True:
             alert = True
 
@@ -156,7 +149,7 @@ def start_cron():
     '''
     print("Iniciando cron...")
     schedule.every().hour.do(analyze_data)
-    schedule.every().minute.do(minute_alert)
+    #schedule.every().minute.do(minute_alert)
     print("Servicio de control iniciado")
     while 1:
         schedule.run_pending()
